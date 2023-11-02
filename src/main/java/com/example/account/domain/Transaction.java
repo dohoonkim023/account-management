@@ -1,15 +1,21 @@
 package com.example.account.domain;
 
-import com.example.account.type.AccountStatus;
 import com.example.account.type.TransactionResultType;
 import com.example.account.type.TransactionType;
-import lombok.*;
+import java.time.LocalDateTime;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,25 +24,31 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 public class Transaction {
+
     @Id
     @GeneratedValue
     private Long id;
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
+
     @Enumerated(EnumType.STRING)
     private TransactionResultType transactionResultType;
 
     @ManyToOne
     private Account account;
+
     private Long amount;
+
     private Long balanceSnapshot;
 
     private String transactionId;
+
     private LocalDateTime transactedAt;
 
-    @CreatedDate  //자동으로 날짜를 생성해서 저장해줌.
+    @CreatedDate
     private LocalDateTime createAt;
-    @LastModifiedDate //자동으로 업데이트 날짜를 생성해서 저장해줌.
+
+    @LastModifiedDate
     private LocalDateTime updateAt;
 }

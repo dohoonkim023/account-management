@@ -3,13 +3,22 @@ package com.example.account.domain;
 import com.example.account.exception.AccountException;
 import com.example.account.type.AccountStatus;
 import com.example.account.type.ErrorCode;
-import lombok.*;
+import java.time.LocalDateTime;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,8 +26,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@EntityListeners(AuditingEntityListener.class) //@CreatedDate과 @LastModifiedDate 가 동장할 수 있도록 해준다.
-public class Account  {
+@EntityListeners(AuditingEntityListener.class)
+public class Account {
+
     @Id
     @GeneratedValue
     private Long id;
@@ -31,13 +41,12 @@ public class Account  {
     private AccountStatus accountStatus;
     private Long balance;
 
-
     private LocalDateTime registerAt;
     private LocalDateTime unRegisterAt;
 
-    @CreatedDate  //자동으로 날짜를 생성해서 저장해줌.
+    @CreatedDate
     private LocalDateTime createAt;
-    @LastModifiedDate //자동으로 업데이트 날짜를 생성해서 저장해줌.
+    @LastModifiedDate
     private LocalDateTime updateAt;
 
     public void useBalance(Long amount) {
@@ -53,5 +62,4 @@ public class Account  {
         }
         balance += amount;
     }
-
 }

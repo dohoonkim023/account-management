@@ -1,5 +1,13 @@
 package com.example.account.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+
 import com.example.account.exception.AccountException;
 import com.example.account.type.ErrorCode;
 import org.junit.jupiter.api.Test;
@@ -9,15 +17,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.redisson.client.RedisClient;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
 
 
 @ExtendWith(MockitoExtension.class)
 class LockServiceTest {
+
     @Mock
     private RedissonClient redissonClient;
 
@@ -31,28 +35,28 @@ class LockServiceTest {
     void successGetLock() throws InterruptedException {
         //given
         given(redissonClient.getLock(anyString()))
-                .willReturn(rLock);
+            .willReturn(rLock);
         given(rLock.tryLock(anyLong(), anyLong(), any()))
-                .willReturn(true);
+            .willReturn(true);
+
         //when
         //then
         assertDoesNotThrow(() -> lockService.lock("123"));
-
     }
 
     @Test
     void failGetLock() throws InterruptedException {
         //given
         given(redissonClient.getLock(anyString()))
-                .willReturn(rLock);
+            .willReturn(rLock);
         given(rLock.tryLock(anyLong(), anyLong(), any()))
-                .willReturn(false);
+            .willReturn(false);
+
         //when
         AccountException exception = assertThrows(AccountException.class,
-                () -> lockService.lock("123"));
+            () -> lockService.lock("123"));
+
         //then
         assertEquals(ErrorCode.ACCOUNT_TRANSACTION_LOCK, exception.getErrorCode());
     }
-
-
 }
